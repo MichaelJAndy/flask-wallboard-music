@@ -1,0 +1,31 @@
+{% extends "_base.html" %}
+{% block content %}
+
+
+<div class="entries">
+  <br>
+  <br>
+  <h2>View Songs:</h2>
+  <div class="datagrid">
+    <table>
+      <thead>
+        <tr>
+          <th width="75px"><strong>Requester</strong></th>
+          <th width="00px"><strong>Song URL</strong></th>
+          <th width="100px"><strong>Delay</strong></th>
+        </tr>
+      </thead>
+        {% for song in songs %}
+  <tr>
+      <td>{{ song.requester }}</td>
+      <td>{{ song.url }}</td>
+      <td>{{ song.delay }}</td>
+  </tr>
+        {% endfor %}
+
+    </table>
+  </div>
+</div>
+
+
+{% endblock %}
