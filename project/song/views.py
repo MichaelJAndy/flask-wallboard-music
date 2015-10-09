@@ -6,6 +6,7 @@
 #################
 
 from flask import render_template, Blueprint, url_for, redirect, flash, request
+import youtube_dl
 from project import db
 from project.models import Song
 from project.song.forms import AddSongForm
@@ -25,23 +26,39 @@ def get_songs():
     return db.session.query(Song).order_by(Song.requester.asc())
 
 
+def check_youtube(url):
+    ydl = youtube_dl.YoutubeDL({'outtmpl': '%(id)s%(ext)s', 'noplaylist': True, 'no_color': True})
+    video = None
+    try:
+        video = ydl.extract_info(url, process=False, download=False)
+    except Exception as e:
+        print(e)
+    return video
+
 ################
 #### routes ####
 ################
+
 
 @song_blueprint.route('/songs/add', methods=['GET', 'POST'])
 def add():
     form = AddSongForm(request.form)
     if form.validate_on_submit():
-        song = Song(
-            url=form.url.data,
-            requester=form.requester.data,
-            delay=form.delay.data
-        )
-        db.session.add(song)
-        db.session.commit()
 
-        flash('Thank you for adding a song.', 'success')
+        video = check_youtube(form.url.data)
+        if video:
+            song = Song(
+                url=form.url.data,
+                requester=form.requester.data,
+                delay=form.delay.data,
+                title=video['title'],
+                youtube_key=video['id']
+            )
+            db.session.add(song)
+            db.session.commit()
+            flash('Thank you for adding a song.', 'success')
+        else:
+            flash('There was an error finding the YouTube view, please try again, .', 'danger')
         return redirect(url_for("song.add"))
 
     return render_template('songs/add.html', form=form)

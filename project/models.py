@@ -14,12 +14,16 @@ class Song(db.Model):
     url = db.Column(db.String(255), nullable=False)
     requester = db.Column(db.String(255), nullable=False)
     delay = db.Column(db.INTEGER(), nullable=False)
+    title = db.Column(db.String(255), nullable=False)
+    youtube_key = db.Column(db.String(255), nullable=False)
     #     mode_id = db.Column(db.Integer, db.ForeignKey('mode.id'))
 
-    def __init__(self, url, requester, delay):
+    def __init__(self, url, requester, delay, title, youtube_key):
         self.url = url
         self.requester = requester
         self.delay = delay
+        self.title = title
+        self.youtube_key = youtube_key
 
     def __repr__(self):
         return '<url {0}>'.format(self.url)
