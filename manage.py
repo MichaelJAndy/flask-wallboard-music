@@ -15,6 +15,7 @@ COV = coverage.coverage(
     )
 COV.start()
 
+
 from project import app, db
 # from project.models import User
 

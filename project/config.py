@@ -1,6 +1,7 @@
 # config.py
 
 import os
+# APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -12,6 +13,8 @@ class BaseConfig(object):
     WTF_CSRF_ENABLED = True
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+    STATIC_FOLDER = os.path.join(basedir, 'static')
+    VIDEOS_FOLDER = os.path.join(STATIC_FOLDER, 'videos')
 
 
 class DevelopmentConfig(BaseConfig):

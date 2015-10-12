@@ -1,32 +1,45 @@
-# project/models.py
+from project import db
 
 
-import datetime
+class SongRequest(db.Model):
 
-from project import db, bcrypt
+    __tablename__ = "song_request"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    delay = db.Column(db.INTEGER(), nullable=False)
+    requester = db.Column(db.String(255), nullable=False)
+    song_file_id = db.Column(db.Integer, db.ForeignKey('song_file.id'))
+
+    def __init__(self, requester, delay, song_file_id):
+        self.requester = requester
+        self.delay = delay
+        self.song_file_id = song_file_id
 
 
-class Song(db.Model):
+class SongFile(db.Model):
 
-    __tablename__ = "song"
+    __tablename__ = "song_file"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.String(255), nullable=False)
-    requester = db.Column(db.String(255), nullable=False)
-    delay = db.Column(db.INTEGER(), nullable=False)
     title = db.Column(db.String(255), nullable=False)
-    youtube_key = db.Column(db.String(255), nullable=False)
-    #     mode_id = db.Column(db.Integer, db.ForeignKey('mode.id'))
+    youtube_id = db.Column(db.String(255), nullable=False)
+    file_name = db.Column(db.String(255), nullable=True)
+    percent_complete = db.Column(db.String(255), nullable=False)
+    completed = db.Column(db.Boolean(), nullable=False, default=False)
+    requests = db.relationship('SongRequest', backref='song')
 
-    def __init__(self, url, requester, delay, title, youtube_key):
+    def __init__(self, url, title, youtube_id):
         self.url = url
-        self.requester = requester
-        self.delay = delay
         self.title = title
-        self.youtube_key = youtube_key
+        self.youtube_id = youtube_id
+        self.file_name = None
+        self.percent_complete = "0.0%"
+        self.completed = False
 
     def __repr__(self):
-        return '<url {0}>'.format(self.url)
+        return '<File title={} url={} youtube_key={} file_name={} percent_complete={}>'\
+            .format(self.title, self.url, self.youtube_key, self.file_name, self.percent_complete)
 
 
 # class User(db.Model):

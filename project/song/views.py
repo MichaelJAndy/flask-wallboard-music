@@ -1,39 +1,20 @@
-# project/song/views.py
-
-
 #################
 #### imports ####
 #################
-
+import os
 from flask import render_template, Blueprint, url_for, redirect, flash, request
-import youtube_dl
-from project import db
-from project.models import Song
+from project.models import SongRequest, SongFile
 from project.song.forms import AddSongForm
+from project.song.helpers import Downloader
+from project.song.dao import SongRequestDAO, SongFileDAO
 
 ################
 #### config ####
 ################
 
 song_blueprint = Blueprint('song', __name__,)
-
-################
-#### Helpers####
-################
-
-
-def get_songs():
-    return db.session.query(Song).order_by(Song.requester.asc())
-
-
-def check_youtube(url):
-    ydl = youtube_dl.YoutubeDL({'outtmpl': '%(id)s%(ext)s', 'noplaylist': True, 'no_color': True})
-    video = None
-    try:
-        video = ydl.extract_info(url, process=False, download=False)
-    except Exception as e:
-        print(e)
-    return video
+song_request_dao = SongRequestDAO()
+song_file_dao = SongFileDAO()
 
 ################
 #### routes ####
@@ -43,22 +24,39 @@ def check_youtube(url):
 @song_blueprint.route('/songs/add', methods=['GET', 'POST'])
 def add():
     form = AddSongForm(request.form)
+    d = Downloader()
     if form.validate_on_submit():
 
-        video = check_youtube(form.url.data)
-        if video:
-            song = Song(
-                url=form.url.data,
+        youtube_info = d.check_youtube(form.url.data)
+
+        # If the video exists on youtube then save the details to DB
+        if youtube_info:
+
+            song_from_db = song_file_dao.get_song_file_by_youtube_id(youtube_info['id'])
+            # If it's not already in the db, then create it
+            if song_from_db is None:
+                song_file = SongFile(
+                    url=form.url.data,
+                    title=youtube_info['title'],
+                    youtube_id=youtube_info['id']
+                )
+                song_file_dao.create_song_file(song_file)
+                song_from_db = song_file
+
+            # attempt a download
+            d.download(youtube_info['id'])
+
+            # do this last - with the file ID
+            song_request = SongRequest(
                 requester=form.requester.data,
                 delay=form.delay.data,
-                title=video['title'],
-                youtube_key=video['id']
+                song_file_id=song_from_db.id
             )
-            db.session.add(song)
-            db.session.commit()
-            flash('Thank you for adding a song.', 'success')
+            song_request_dao.create_song_request(song_request)
+            flash('Thank you for adding a song. Attempting background download.', 'success')
+
         else:
-            flash('There was an error finding the YouTube view, please try again, .', 'danger')
+            flash('There was an error finding the YouTube video, please try another URL.', 'danger')
         return redirect(url_for("song.add"))
 
     return render_template('songs/add.html', form=form)
@@ -66,40 +64,40 @@ def add():
 
 @song_blueprint.route('/songs/view')
 def view():
-
-    return render_template('songs/view.html', songs=get_songs())
-
+    return render_template('songs/view.html', requests=song_request_dao.get_song_requests())
 
 
+# # TODO: Doing a GET here is wrong and needs to be fixed
+@song_blueprint.route('/songs/delete/<int:request_id>')
+def delete(request_id):
+    song_object = song_request_dao.get_song_request_by_id(request_id)
+
+    if song_object is not None:
+        song_request_dao.delete_song_request(song_object)
+        # TODO: Cleanup of song_files and physical files
+        # try:
+        #     os.remove(os.path.join(app.config['VIDEOS_FOLDER'], song_object.file))
+        # except OSError as e:
+        #     print("Error removing file", e)
+        flash('The song was deleted. Why not add a new one?', 'success')
+    else:
+        flash('Song id not found, it could have already been deleted', 'danger')
+    return redirect(url_for('song.view'))
 
 
+@song_blueprint.route('/songs/redownload/<int:request_id>')
+def redownload(request_id):
+    song_request = song_request_dao.get_song_request_by_id(request_id)
+    song_request.song.percent_complete = "0%"
+    song_request.song.completed = False
+    song_request_dao.update_song_request(song_request)
+    d = Downloader()
+    d.download(song_request.song.youtube_id)
+    flash('Attempting background download again', 'success')
+    return redirect(url_for('song.view'))
 
-#
-# @user_blueprint.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm(request.form)
-#     if form.validate_on_submit():
-#         user = User.query.filter_by(email=form.email.data).first()
-#         if user and bcrypt.check_password_hash(
-#                 user.password, request.form['password']):
-#             login_user(user)
-#             flash('You are logged in. Welcome!', 'success')
-#             return redirect(url_for('user.members'))
-#         else:
-#             flash('Invalid email and/or password.', 'danger')
-#             return render_template('user/login.html', form=form)
-#     return render_template('user/login.html', title='Please Login', form=form)
-#
-#
-# @user_blueprint.route('/logout')
-# @login_required
-# def logout():
-#     logout_user()
-#     flash('You were logged out. Bye!', 'success')
-#     return redirect(url_for('main.home'))
-#
-#
-# @user_blueprint.route('/members')
-# @login_required
-# def members():
-#     return render_template('user/members.html')
+
+@song_blueprint.route('/songs/playsong/<int:request_id>')
+def play(request_id):
+    song_request = song_request_dao.get_song_request_by_id(request_id)
+    return render_template('songs/playsong.html', request=song_request)

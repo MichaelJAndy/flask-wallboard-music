@@ -1,17 +1,16 @@
 from flask_wtf import Form
 from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired, InputRequired, NumberRange, Regexp, ValidationError
-import youtube_dl
 
 __author__ = 'mandreacchio'
 
-
-def check_youtube(form, field):
-    ydl = youtube_dl.YoutubeDL({'outtmpl': '%(id)s%(ext)s', 'noplaylist': True, 'no_color': True})
-    try:
-        ydl.extract_info(field.data, process=False, download=False)
-    except Exception:
-        raise ValidationError("Invalid Youtube Video")
+# Removed this as there's no way to avoid doing this twice
+# def check_youtube(form, field):
+#     ydl = youtube_dl.YoutubeDL({'outtmpl': '%(id)s%(ext)s', 'noplaylist': True, 'no_color': True})
+#     try:
+#         ydl.extract_info(field.data, process=False, download=False)
+#     except Exception:
+#         raise ValidationError("Invalid Youtube Video")
 
 
 class AddSongForm(Form):

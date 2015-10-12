@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+
+{% block content %}
+
+    <div class="entries">
+
+        {% if request.song.completed %}
+            <video controls id="myvideo" autoplay>
+                <source src="{{url_for('static', filename='videos/')}}{{ request.song.file_name }}" type="video/mp4">
+                <source src="{{url_for('static', filename='videos/')}}{{ request.song.file_name }}" type="video/ogg">
+                Your browser does not support the <code>video</code>
+            </video>
+            <script>
+                document.getElementById('myvideo').addEventListener('loadedmetadata', function() {
+                    this.currentTime = {{ request.delay }};
+                }, false);
+
+                {# TODO: populate with job timeout time #}
+                setTimeout(function() { window.close(); }, 5000);
+
+            </script>
+
+        {%  else %}
+            <h1>Error video not found</h1>
+        {% endif %}
+    </div>
+
+{% endblock %}

@@ -1,35 +1,67 @@
 {% extends "_base.html" %}
 {% block content %}
 
+    <div class="entries">
+        <br>
+        <br>
+        <h2>View Songs</h2>
+        <div class="datagrid">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th width="15px"><strong>id</strong></th>
+                    <th width="75px"><strong>Requester</strong></th>
+                    <th width="400px"><strong>Title</strong></th>
+                    <th width="300px"><strong>Song URL</strong></th>
+                    <th width="10px"><strong>Delay</strong></th>
+                    <th width="100px"><strong>YouTube Id</strong></th>
+                    <th width="10px"><strong>Status</strong></th>
+                    <th width="10px"><strong>Operations</strong></th>
+                    {#                    <th width="10px"><strong>Play</strong></th>#}
+                </tr>
+                </thead>
+                {% for request in requests %}
+                    <tr>
+                        <td>{{ request.id }}</td>
+                        <td>{{ request.requester }}</td>
+                        <td>{{ request.song.title }}</td>
+                        <td>{{ request.song.url }}</td>
+                        <td>{{ request.delay }}</td>
+                        <td>{{ request.song.youtube_id }}</td>
+                        <td>
+                            {% if request.song.completed %}
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            {%  else %}
+                                {{ request.song.percent_complete }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/songs/redownload/{{ request.id }}" title="Re-Download">
+                                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                            </a>
 
-<div class="entries">
-  <br>
-  <br>
-  <h2>View Songs:</h2>
-  <div class="datagrid">
-    <table class="table">
-      <thead>
-        <tr>
-            <th width="75px"><strong>Requester</strong></th>
-            <th width="400px"><strong>Title</strong></th>
-            <th width="300px"><strong>Song URL</strong></th>
-            <th width="10px"><strong>Delay</strong></th>
-            <th width="100px"><strong>YouTube Key</strong></th>
-        </tr>
-      </thead>
-        {% for song in songs %}
-  <tr>
-      <td>{{ song.requester }}</td>
-    <td>{{ song.title }}</td>
-      <td>{{ song.url }}</td>
-      <td>{{ song.delay }}</td>
-      <td>{{ song.youtube_key }}</td>
-  </tr>
-        {% endfor %}
+                            <a href="/songs/delete/{{ request.id }}" title="Delete Request">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </a>
 
-    </table>
-  </div>
-</div>
+                            {% if request.song.completed %}
+                                <button onclick="openFunction{{ request.id }}()" title="Play">
+                                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                                </button>
+
+                                <script>
+                                    function openFunction{{ request.id }}() {
+                                        window.open("/songs/playsong/{{ request.id }}");
+                                    }
+                                </script>
+                            {% endif %}
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 
 
 {% endblock %}
