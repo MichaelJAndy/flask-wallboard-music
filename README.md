@@ -1,8 +1,4 @@
-# Flask Skeleton
-
-Flask starter project...
-
-[![Build Status](https://travis-ci.org/realpython/flask-skeleton.svg?branch=master)](https://travis-ci.org/realpython/flask-skeleton)
+# Flask Wallboard Music
 
 ## Quick Start
 
