@@ -30,6 +30,3 @@ class AddSongForm(Form):
                          default=0)
     # #     mode_id = db.Column(db.Integer, db.ForeignKey('mode.id'))
 
-
-
-

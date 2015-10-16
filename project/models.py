@@ -1,6 +1,24 @@
 from project import db
 
 
+class Event(db.Model):
+
+    __tablename__ = "event"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255), nullable=False)
+    requests = db.relationship('SongRequest', backref='event')
+
+    # def __init__(self, name):
+    #     self.name = name
+
+    # Attempting creation with no __init__
+    # def __init__(self, requester, delay, song_file_id):
+    #     self.requester = requester
+    #     self.delay = delay
+    #     self.song_file_id = song_file_id
+
+
 class SongRequest(db.Model):
 
     __tablename__ = "song_request"
@@ -9,6 +27,7 @@ class SongRequest(db.Model):
     delay = db.Column(db.INTEGER(), nullable=False)
     requester = db.Column(db.String(255), nullable=False)
     song_file_id = db.Column(db.Integer, db.ForeignKey('song_file.id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
 
     def __init__(self, requester, delay, song_file_id):
         self.requester = requester
@@ -40,6 +59,10 @@ class SongFile(db.Model):
     def __repr__(self):
         return '<File title={} url={} youtube_key={} file_name={} percent_complete={}>'\
             .format(self.title, self.url, self.youtube_key, self.file_name, self.percent_complete)
+
+
+
+
 
 
 # class User(db.Model):

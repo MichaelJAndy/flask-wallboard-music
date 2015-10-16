@@ -11,8 +11,10 @@ from flask import Flask, render_template
 from flask.ext.login import LoginManager
 from flask.ext.bcrypt import Bcrypt
 from flask.ext.debugtoolbar import DebugToolbarExtension
+from flask.ext.restless import APIManager
 from flask_bootstrap import Bootstrap
 from flask.ext.sqlalchemy import SQLAlchemy
+
 
 
 ################
@@ -39,7 +41,6 @@ toolbar = DebugToolbarExtension(app)
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 
-
 ###################
 ### blueprints ####
 ###################
@@ -48,8 +49,19 @@ db = SQLAlchemy(app)
 # app.register_blueprint(user_blueprint)
 from project.main.views import main_blueprint
 from project.song.views import song_blueprint
+from project.event.views import event_blueprint
 app.register_blueprint(main_blueprint)
 app.register_blueprint(song_blueprint)
+app.register_blueprint(event_blueprint)
+
+
+###################
+#### API ##########
+###################
+
+api_manager = APIManager(app, flask_sqlalchemy_db=db)
+from project.api import api_blueprint
+app.register_blueprint(api_blueprint)
 
 
 ###################
