@@ -1,10 +1,12 @@
 import os
+
 import youtube_dl
 import threading
 from project.song.dao import SongRequestDAO, SongFileDAO
 
 # TODO: This doesn't seem like an efficient way to get app.config, but...
-from project import app
+# from project import app
+# from flask.config import Config
 
 song_request_dao = SongRequestDAO()
 song_file_dao = SongFileDAO()
@@ -12,6 +14,7 @@ song_file_dao = SongFileDAO()
 
 # TODO: This feels bad man - Would prefer this function in Downloader class
 def my_hook(d):
+
     if d['status'] == 'finished':
         file_tuple = os.path.split(os.path.abspath(d['filename']))
         file_name = file_tuple[1]

@@ -19,7 +19,7 @@ class SongRequestDAO(object):
         return db.session.query(SongRequest).filter_by(id=id).first()
 
     def get_song_requests_by_kwargs(self, **kwargs):
-        return db.session.query(SongRequest).filter_by(**kwargs).all
+        return db.session.query(SongRequest).filter_by(**kwargs).all()
 
     def delete_song_request(self, song_request):
         db.session.delete(song_request)

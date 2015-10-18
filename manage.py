@@ -1,6 +1,5 @@
 # manage.py
 
-
 import os
 import unittest
 import coverage
@@ -14,7 +13,6 @@ COV = coverage.coverage(
         omit=['*/__init__.py', '*/config/*']
     )
 COV.start()
-
 
 from project import app, db
 # from project.models import User
@@ -63,6 +61,7 @@ def create_db():
 @manager.command
 def drop_db():
     """Drops the db tables."""
+    db.reflect()
     db.drop_all()
 
 

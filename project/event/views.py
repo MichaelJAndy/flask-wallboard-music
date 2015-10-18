@@ -4,7 +4,6 @@ __author__ = 'mandreacchio'
 #################
 #### imports ####
 #################
-import os
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from project.models import Event
 from project.event.forms import AddEventForm
@@ -31,6 +30,14 @@ def add():
         event = Event(name=form.name.data)
         event_dao.create_event(event)
         flash('Event added.', 'success')
-        return redirect(url_for("event.add"))
+        return redirect(url_for("main.home"))
 
     return render_template('event/add.html', form=form)
+
+
+@event_blueprint.route('/event/view')
+def view():
+
+    events = event_dao.get_events()
+    return render_template('event/view.html', events=events)
+

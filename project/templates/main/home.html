@@ -2,10 +2,55 @@
 
 {% block content %}
 
-<div class="body-content">
-  <div class="row">
-    <h1>Welcome!</h1>
-  </div>
-</div>
+    <div class="body-content">
+        <div class="row">
+            <h1>Welcome to Flask Wallboard Music!</h1>
+        </div>
+
+    <a href="{{ url_for('event.add') }}"><button type="button" class="btn btn-primary pull-right">Add New Event</button></a>
+
+        <div class="entries">
+            <br>
+            <br>
+            <h2>Events</h2>
+            <div class="datagrid">
+
+            {% if events %}
+
+            <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th width="15px"><strong>id</strong></th>
+                        <th width="100px"><strong>Event name</strong></th>
+                        <th width="100px"><strong>Add Jobs</strong></th>
+                        <th width="100px"><strong>Add Request</strong></th>
+                        <th width="100px"><strong>View Requests</strong></th>
+
+                    </tr>
+                    </thead>
+                    {% for event in events %}
+                        <tr>
+                            <td>{{ event.id }}</td>
+                            <td>{{ event.name }}</td>
+                            <td><a href="{{ url_for('job.add', event_id=event.id) }}">Add Job</a></td>
+                            <td><a href="{{ url_for('song.add', event_id=event.id) }}">Add Song Request</a></td>
+                            <td><a href="{{ url_for('song.view', event_id=event.id) }}">View Song Requests</a></td>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+
+            {% else %}
+
+                <h3><a href="{{ url_for('event.add') }}">No events found, add one</a></h3>
+
+            {% endif %}
+            </div>
+        </div>
+
+
+
+    </div>
 
 {% endblock %}

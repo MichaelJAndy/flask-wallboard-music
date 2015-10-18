@@ -6,14 +6,14 @@
 #################
 
 from flask import render_template, Blueprint
-
+from project.event.dao import EventDAO
 
 ################
 #### config ####
 ################
 
 main_blueprint = Blueprint('main', __name__,)
-
+event_dao = EventDAO()
 
 ################
 #### routes ####
@@ -22,7 +22,8 @@ main_blueprint = Blueprint('main', __name__,)
 
 @main_blueprint.route('/')
 def home():
-    return render_template('main/home.html')
+    events = event_dao.get_events()
+    return render_template('main/home.html', events=events)
 
 
 @main_blueprint.route("/about/")

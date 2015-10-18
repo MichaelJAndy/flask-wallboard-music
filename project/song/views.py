@@ -21,8 +21,8 @@ song_file_dao = SongFileDAO()
 ################
 
 
-@song_blueprint.route('/songs/add', methods=['GET', 'POST'])
-def add():
+@song_blueprint.route('/songs/add/<int:event_id>', methods=['GET', 'POST'])
+def add(event_id):
     form = AddSongForm(request.form)
     d = Downloader()
     if form.validate_on_submit():
@@ -50,21 +50,22 @@ def add():
             song_request = SongRequest(
                 requester=form.requester.data,
                 delay=form.delay.data,
-                song_file_id=song_from_db.id
+                song_file_id=song_from_db.id,
+                event_id=event_id
             )
             song_request_dao.create_song_request(song_request)
             flash('Thank you for adding a song. Attempting background download.', 'success')
-
+            return redirect(url_for("song.view", event_id=event_id))
         else:
             flash('There was an error finding the YouTube video, please try another URL.', 'danger')
-        return redirect(url_for("song.add"))
 
     return render_template('songs/add.html', form=form)
 
 
-@song_blueprint.route('/songs/view')
-def view():
-    return render_template('songs/view.html', requests=song_request_dao.get_song_requests())
+@song_blueprint.route('/songs/view/<int:event_id>')
+def view(event_id):
+    requests = song_request_dao.get_song_requests_by_kwargs(event_id=event_id)
+    return render_template('songs/view.html', requests=requests, event_id=event_id)
 
 
 # # TODO: Doing a GET here is wrong and needs to be fixed
@@ -82,7 +83,7 @@ def delete(request_id):
         flash('The song was deleted. Why not add a new one?', 'success')
     else:
         flash('Song id not found, it could have already been deleted', 'danger')
-    return redirect(url_for('song.view'))
+    return redirect(url_for('song.view', event_id=song_object.event_id))
 
 
 @song_blueprint.route('/songs/redownload/<int:request_id>')
@@ -94,7 +95,7 @@ def redownload(request_id):
     d = Downloader()
     d.download(song_request.song.youtube_id)
     flash('Attempting background download again', 'success')
-    return redirect(url_for('song.view'))
+    return redirect(url_for('song.view', event_id=song_request.event_id))
 
 
 @song_blueprint.route('/songs/playsong/<int:request_id>')

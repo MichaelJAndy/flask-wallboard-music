@@ -4,62 +4,72 @@
     <div class="entries">
         <br>
         <br>
-        <h2>View Songs</h2>
+        <a href="{{ url_for('song.add', event_id=event_id) }}"><button type="button" class="btn btn-primary pull-right">Add Song Request</button></a>
+
+        <h2>Requested Songs</h2>
+
         <div class="datagrid">
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th width="15px"><strong>id</strong></th>
-                    <th width="75px"><strong>Requester</strong></th>
-                    <th width="400px"><strong>Title</strong></th>
-                    <th width="300px"><strong>Song URL</strong></th>
-                    <th width="10px"><strong>Delay</strong></th>
-                    <th width="100px"><strong>YouTube Id</strong></th>
-                    <th width="10px"><strong>Status</strong></th>
-                    <th width="10px"><strong>Operations</strong></th>
-                    {#                    <th width="10px"><strong>Play</strong></th>#}
-                </tr>
-                </thead>
-                {% for request in requests %}
+
+            {% if requests %}
+
+                <table class="table table-hover">
+                    <thead>
                     <tr>
-                        <td>{{ request.id }}</td>
-                        <td>{{ request.requester }}</td>
-                        <td>{{ request.song.title }}</td>
-                        <td>{{ request.song.url }}</td>
-                        <td>{{ request.delay }}</td>
-                        <td>{{ request.song.youtube_id }}</td>
-                        <td>
-                            {% if request.song.completed %}
-                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                            {%  else %}
-                                {{ request.song.percent_complete }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="/songs/redownload/{{ request.id }}" title="Re-Download">
-                                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-                            </a>
-
-                            <a href="/songs/delete/{{ request.id }}" title="Delete Request">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                            </a>
-
-                            {% if request.song.completed %}
-                                <button onclick="openFunction{{ request.id }}()" title="Play">
-                                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                                </button>
-
-                                <script>
-                                    function openFunction{{ request.id }}() {
-                                        window.open("/songs/playsong/{{ request.id }}");
-                                    }
-                                </script>
-                            {% endif %}
-
-                        </td>
+                        <th width="15px"><strong>id</strong></th>
+                        <th width="75px"><strong>Requester</strong></th>
+                        <th width="400px"><strong>Title</strong></th>
+                        <th width="300px"><strong>Song URL</strong></th>
+                        <th width="10px"><strong>Delay</strong></th>
+                        <th width="100px"><strong>YouTube Id</strong></th>
+                        <th width="10px"><strong>Status</strong></th>
+                        <th width="10px"><strong>Operations</strong></th>
                     </tr>
-                {% endfor %}
-            </table>
+                    </thead>
+                    {% for request in requests %}
+                        <tr>
+                            <td>{{ request.id }}</td>
+                            <td>{{ request.requester }}</td>
+                            <td>{{ request.song.title }}</td>
+                            <td>{{ request.song.url }}</td>
+                            <td>{{ request.delay }}</td>
+                            <td>{{ request.song.youtube_id }}</td>
+                            <td>
+                                {% if request.song.completed %}
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                {% else %}
+                                    {{ request.song.percent_complete }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/songs/redownload/{{ request.id }}" title="Re-Download">
+                                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                                </a>
+
+                                <a href="/songs/delete/{{ request.id }}" title="Delete Request">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </a>
+
+                                {% if request.song.completed %}
+                                    <button onclick="openFunction{{ request.id }}()" title="Play">
+                                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                                    </button>
+
+                                    <script>
+                                        function openFunction{{ request.id }}() {
+                                            window.open("/songs/playsong/{{ request.id }}");
+                                        }
+                                    </script>
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            {% else %}
+                <h3><a href="{{ url_for('song.add', event_id=event_id) }}">No Song Requests found, add one</a></h3>
+            {% endif %}
+
         </div>
     </div>
 

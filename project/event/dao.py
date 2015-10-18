@@ -13,7 +13,7 @@ class EventDAO(object):
         db.session.commit()
 
     def get_events(self):
-        return db.session.query(Event).order_by(Event.requester.asc()).all()
+        return db.session.query(Event).order_by(Event.id.asc()).all()
 
     def get_event_by_id(self, id_number):
         return db.session.query(Event).filter_by(id=id_number).first()
