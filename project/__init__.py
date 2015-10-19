@@ -115,4 +115,5 @@ def page_not_found(error):
 def server_error_page(error):
     return render_template("errors/500.html"), 500
 
+
 scheduler.start()

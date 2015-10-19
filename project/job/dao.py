@@ -48,6 +48,7 @@ class JobDAO(object):
         return db.session.query(Job).filter_by(**kwargs).all()
 
     def delete_job(self, job):
+        scheduler.remove_job(job.apscheduler_job_id)
         db.session.delete(job)
         db.session.commit()
 

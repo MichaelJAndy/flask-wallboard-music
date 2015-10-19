@@ -101,4 +101,6 @@ def redownload(request_id):
 @song_blueprint.route('/songs/playsong/<int:request_id>')
 def play(request_id):
     song_request = song_request_dao.get_song_request_by_id(request_id)
-    return render_template('songs/playsong.html', request=song_request)
+    from project.event.dao import EventDAO
+    event = EventDAO().get_event_by_id(song_request.event_id)
+    return render_template('songs/playsong.html', request=song_request, event=event)

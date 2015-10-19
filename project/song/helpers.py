@@ -3,6 +3,7 @@ import os
 import youtube_dl
 import threading
 from project.song.dao import SongRequestDAO, SongFileDAO
+from project import app
 
 # TODO: This doesn't seem like an efficient way to get app.config, but...
 # from project import app

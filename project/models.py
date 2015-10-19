@@ -8,6 +8,7 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
     requests = db.relationship('SongRequest', backref='event')
+    play_length = db.Column(db.Integer, nullable=False)
     jobs = db.relationship('Job', backref='job_event')
 
 
@@ -17,9 +18,9 @@ class Job(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
-    hour = db.Column(db.INTEGER)
-    minute = db.Column(db.INTEGER)
-    second = db.Column(db.INTEGER)
+    hour = db.Column(db.Integer)
+    minute = db.Column(db.Integer)
+    second = db.Column(db.Integer)
     day_of_week = db.Column(db.String(255))
     # apscheduler_job_id = db.Column(db.TEXT, db.ForeignKey('apscheduler_jobs.id'))
     apscheduler_job_id = db.Column(db.TEXT)

@@ -7,45 +7,52 @@
             <h1>Welcome to Flask Wallboard Music!</h1>
         </div>
 
-    <a href="{{ url_for('event.add') }}"><button type="button" class="btn btn-primary pull-right">Add New Event</button></a>
-
         <div class="entries">
             <br>
             <br>
-            <h2>Events</h2>
+            <h2>
+                Events <a href="{{ url_for('event.add') }}"><button type="button" class="btn btn-primary pull-right">Add New Event</button></a>
+            </h2>
             <div class="datagrid">
 
-            {% if events %}
+                {% if events %}
 
-            <table class="table table-hover">
-                    <thead>
-                    <tr>
-                        <th width="15px"><strong>id</strong></th>
-                        <th width="100px"><strong>Event name</strong></th>
-                        <th width="100px"><strong>Add Jobs</strong></th>
-                        <th width="100px"><strong>Add Request</strong></th>
-                        <th width="100px"><strong>View Requests</strong></th>
-
-                    </tr>
-                    </thead>
-                    {% for event in events %}
+                    <table class="table table-hover">
+                        <thead>
                         <tr>
-                            <td>{{ event.id }}</td>
-                            <td>{{ event.name }}</td>
-                            <td><a href="{{ url_for('job.add', event_id=event.id) }}">Add Job</a></td>
-                            <td><a href="{{ url_for('song.add', event_id=event.id) }}">Add Song Request</a></td>
-                            <td><a href="{{ url_for('song.view', event_id=event.id) }}">View Song Requests</a></td>
-                            </td>
+                            <th width="15px"><strong>id</strong></th>
+                            <th width="100px"><strong>Event name</strong></th>
+                            <th width="100px"><strong>Event Length</strong></th>
+                            <th width="100px"><strong>Jobs</strong></th>
+                            <th width="100px"><strong>Song Requests</strong></th>
+                            <th width="100px"><strong>Operations</strong></th>
+
                         </tr>
-                    {% endfor %}
+                        </thead>
+                        {% for event in events %}
+                            <tr>
+                                <td>{{ event.id }}</td>
+                                <td>{{ event.name }}</td>
+                                <td>{{ event.play_length }}</td>
+                                <td><a href="{{ url_for('job.view', event_id=event.id) }}">Configure Jobs</a></td>
+                                <td><a href="{{ url_for('song.view', event_id=event.id) }}">{{ event.name }} Song Requests</a></td>
+                                <td>
+                                    <a href="{{ url_for('event.edit', event_id=event.id) }}">
+                                        <button>
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
 
-                </table>
+                    </table>
 
-            {% else %}
+                {% else %}
 
-                <h3><a href="{{ url_for('event.add') }}">No events found, add one</a></h3>
+                    <h3><a href="{{ url_for('event.add') }}">No events found, add one</a></h3>
 
-            {% endif %}
+                {% endif %}
             </div>
         </div>
 

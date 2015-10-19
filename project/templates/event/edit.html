@@ -1,0 +1,34 @@
+{% extends '_base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+
+    <header class="content-header">
+        <h1>Edit event</h1>
+    </header>
+
+    <br>
+
+
+    <form class="form" role="form" method="post" action="">
+
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+        {{ wtf.form_errors(form, hiddens="only") }}
+
+        <div class="col-lg-4 col-sm-4">
+
+
+            {{ form.hidden_tag(form.id) }}
+            {{ wtf.form_field(form.name) }}
+            {{ wtf.form_field(form.play_length) }}
+
+            <button class="btn btn-success" type="submit">Add Event!</button>
+            <br><br>
+
+        </div>
+
+    </form>
+
+
+{% endblock content %}

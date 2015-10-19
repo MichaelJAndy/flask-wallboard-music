@@ -4,13 +4,17 @@
     <div class="entries">
         <br>
         <br>
-        <h2>View Events</h2>
+        <h2>
+            View Jobs <a href="{{ url_for('job.add', event_id=event_id) }}"><button type="button" class="btn btn-primary pull-right">Add Job</button></a>
+        </h2>
         <div class="datagrid">
             <table class="table table-hover">
                 <thead>
                 <tr>
                     <th width="15px"><strong>id</strong></th>
                     <th width="300px"><strong>Job name</strong></th>
+                    <th width="300px"><strong>Job Schedule</strong></th>
+                    <th width="300px"><strong>Operations</strong></th>
 
 
                 </tr>
@@ -19,7 +23,12 @@
                     <tr>
                         <td>{{ job.id }}</td>
                         <td>{{ job.name }}</td>
-
+                        <td>{{ job.day }} Hour={{ job.hour }} Min={{ job.minute }} Second={{ job.second }}</td>
+                        <td>
+                            <a href="{{ url_for('job.delete', job_id=job.id) }}" title="Delete Job">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
