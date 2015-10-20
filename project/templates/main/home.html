@@ -37,11 +37,25 @@
                                 <td><a href="{{ url_for('job.view', event_id=event.id) }}">Configure Jobs</a></td>
                                 <td><a href="{{ url_for('song.view', event_id=event.id) }}">{{ event.name }} Song Requests</a></td>
                                 <td>
-                                    <a href="{{ url_for('event.edit', event_id=event.id) }}">
-                                        <button>
-                                            <span class="glyphicon glyphicon-pencil"></span>
-                                        </button>
-                                    </a>
+                                    <div class="row">
+
+                                        <div class="col-xs-1">
+                                            <a href="{{ url_for('event.edit', event_id=event.id) }}">
+                                                <button>
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </button>
+                                            </a>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <form action="{{ url_for('event.delete') }}" method="post">
+                                                {{ form.id(value=event.id) }}
+                                                <button type="submit">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -55,8 +69,6 @@
                 {% endif %}
             </div>
         </div>
-
-
 
     </div>
 

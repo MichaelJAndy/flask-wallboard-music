@@ -40,27 +40,39 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="/songs/redownload/{{ request.id }}" title="Re-Download">
-                                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
-                                </a>
 
-                                <a href="/songs/delete/{{ request.id }}" title="Delete Request">
-                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                </a>
+                                <div class="row">
+                                    <div class="col-xs-1">
+                                        <a href="/songs/redownload/{{ request.id }}" title="Re-Download">
+                                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <form action="{{ url_for('song.delete') }}" method="post">
+                                            {{ form.id(value=request.id) }}
+                                            <button type="submit">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </form>
+                                    </div>
 
-                                {% if request.song.completed %}
-                                    <button onclick="openFunction{{ request.id }}()" title="Play">
-                                        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                                    </button>
+                                    {% if request.song.completed %}
+                                        <div class="col-xs-1">
+                                            <button onclick="openFunction{{ request.id }}()" title="Play">
+                                                <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                                            </button>
 
-                                    <script>
-                                        function openFunction{{ request.id }}() {
-                                            window.open("/songs/playsong/{{ request.id }}");
-                                        }
-                                    </script>
-                                {% endif %}
+                                            <script>
+                                                function openFunction{{ request.id }}() {
+                                                    window.open("/songs/playsong/{{ request.id }}");
+                                                }
+                                            </script>
+                                        </div>
+                                    {% endif %}
+                                </div>
 
                             </td>
+
                         </tr>
                     {% endfor %}
                 </table>

@@ -7,6 +7,7 @@
 
 from flask import render_template, Blueprint
 from project.event.dao import EventDAO
+from project.event.forms import DeleteEventForm
 
 ################
 #### config ####
@@ -23,7 +24,8 @@ event_dao = EventDAO()
 @main_blueprint.route('/')
 def home():
     events = event_dao.get_events()
-    return render_template('main/home.html', events=events)
+    form = DeleteEventForm()
+    return render_template('main/home.html', events=events, form=form)
 
 
 @main_blueprint.route("/about/")

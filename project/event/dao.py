@@ -1,5 +1,7 @@
 from project import db
 from project.models import Event
+from project.job.dao import JobDAO
+from project.song.dao import SongRequestDAO
 
 
 class EventDAO(object):
@@ -22,6 +24,10 @@ class EventDAO(object):
         return db.session.query(Event).filter_by(**kwargs).all
 
     def delete_event(self, event):
+        for job in event.jobs:
+            JobDAO().delete_job(job)
+        for song in event.requests:
+            SongRequestDAO().delete_song_request(song)
         db.session.delete(event)
         db.session.commit()
 

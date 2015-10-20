@@ -6,7 +6,7 @@ __author__ = 'mandreacchio'
 #################
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from project.models import Event
-from project.event.forms import EventForm
+from project.event.forms import EventForm, DeleteEventForm
 # from project.event.helpers import blah
 from project.event.dao import EventDAO
 
@@ -36,6 +36,7 @@ def add():
     return render_template('event/add.html', form=form)
 
 
+# Moved this stuff to the front page
 # @event_blueprint.route('/event/view')
 # def view():
 #
@@ -57,11 +58,17 @@ def edit(event_id):
     return render_template('event/edit.html', form=form, event_id=event_id)
 
 
-# def edit_profile(request):
-#     user = request.current_user
-#     form = ProfileForm(request.POST, user)
-#     if request.method == 'POST' and form.validate():
-#         form.populate_obj(user)
-#         user.save()
-#         redirect('edit_profile')
-#     return render_response('edit_profile.html', form=form)
+@event_blueprint.route('/event/delete', methods=['POST'])
+def delete():
+
+    form = DeleteEventForm(request.form)
+    event_object = event_dao.get_event_by_id(form.id.data)
+
+    if event_object:
+        event_dao.delete_event(event_object)
+        flash('Event Deleted.', 'success')
+        return redirect(url_for("main.home"))
+
+    flash('Event For Deletion Not Found', 'danger')
+    return redirect(url_for("main.home"))
+

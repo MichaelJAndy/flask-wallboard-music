@@ -10,3 +10,7 @@ class EventForm(Form):
     id = HiddenField()
     name = StringField('Event Name', validators=[DataRequired()])
     play_length = IntegerField('Song Length ms', validators=[InputRequired()])
+
+
+class DeleteEventForm(Form):
+    id = HiddenField()

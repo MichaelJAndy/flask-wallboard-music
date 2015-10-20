@@ -4,7 +4,7 @@
 import os
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from project.models import SongRequest, SongFile
-from project.song.forms import AddSongForm
+from project.song.forms import AddSongForm, DeleteSongForm
 from project.song.helpers import Downloader
 from project.song.dao import SongRequestDAO, SongFileDAO
 
@@ -64,14 +64,15 @@ def add(event_id):
 
 @song_blueprint.route('/songs/view/<int:event_id>')
 def view(event_id):
+    form = DeleteSongForm()
     requests = song_request_dao.get_song_requests_by_kwargs(event_id=event_id)
-    return render_template('songs/view.html', requests=requests, event_id=event_id)
+    return render_template('songs/view.html', requests=requests, event_id=event_id, form=form)
 
 
-# # TODO: Doing a GET here is wrong and needs to be fixed
-@song_blueprint.route('/songs/delete/<int:request_id>')
-def delete(request_id):
-    song_object = song_request_dao.get_song_request_by_id(request_id)
+@song_blueprint.route('/songs/delete', methods=['POST'])
+def delete():
+    form = DeleteSongForm()
+    song_object = song_request_dao.get_song_request_by_id(form.id.data)
 
     if song_object is not None:
         song_request_dao.delete_song_request(song_object)
@@ -82,7 +83,7 @@ def delete(request_id):
         #     print("Error removing file", e)
         flash('The song was deleted. Why not add a new one?', 'success')
     else:
-        flash('Song id not found, it could have already been deleted', 'danger')
+        flash('Song id not found, it may have already been deleted', 'danger')
     return redirect(url_for('song.view', event_id=song_object.event_id))
 
 

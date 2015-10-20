@@ -25,9 +25,16 @@
                         <td>{{ job.name }}</td>
                         <td>{{ job.day }} Hour={{ job.hour }} Min={{ job.minute }} Second={{ job.second }}</td>
                         <td>
-                            <a href="{{ url_for('job.delete', job_id=job.id) }}" title="Delete Job">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                            </a>
+
+                            <div class="col-xs-1">
+                                <form action="{{ url_for('job.delete', job_id=job.id) }}" method="post">
+                                    {{ form.id(value=job.id) }}
+                                    <button type="submit">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </form>
+                            </div>
+
                         </td>
                     </tr>
                 {% endfor %}

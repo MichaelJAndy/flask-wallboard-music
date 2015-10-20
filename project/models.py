@@ -7,8 +7,8 @@ class Event(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
-    requests = db.relationship('SongRequest', backref='event')
     play_length = db.Column(db.Integer, nullable=False)
+    requests = db.relationship('SongRequest', backref='event')
     jobs = db.relationship('Job', backref='job_event')
 
 
@@ -75,33 +75,6 @@ class SongFile(db.Model):
     def __repr__(self):
         return '<File title={} url={} youtube_key={} file_name={} percent_complete={}>'\
             .format(self.title, self.url, self.youtube_key, self.file_name, self.percent_complete)
-
-
-# class Job(db.Model):
-#
-#     __tablename__ = "job"
-#
-#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     url = db.Column(db.String(255), nullable=False)
-#     title = db.Column(db.String(255), nullable=False)
-#     youtube_id = db.Column(db.String(255), nullable=False)
-#     file_name = db.Column(db.String(255), nullable=True)
-#     percent_complete = db.Column(db.String(255), nullable=False)
-#     completed = db.Column(db.Boolean(), nullable=False, default=False)
-#     requests = db.relationship('SongRequest', backref='song')
-#
-#     def __init__(self, url, title, youtube_id):
-#         self.url = url
-#         self.title = title
-#         self.youtube_id = youtube_id
-#         self.file_name = None
-#         self.percent_complete = "0.0%"
-#         self.completed = False
-#
-#     def __repr__(self):
-#         return '<File title={} url={} youtube_key={} file_name={} percent_complete={}>'\
-#             .format(self.title, self.url, self.youtube_key, self.file_name, self.percent_complete)
-
 
 
 
