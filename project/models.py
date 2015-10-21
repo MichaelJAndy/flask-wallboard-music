@@ -21,10 +21,11 @@ class Job(db.Model):
     hour = db.Column(db.Integer)
     minute = db.Column(db.Integer)
     second = db.Column(db.Integer)
-    day_of_week = db.Column(db.String(255))
-    # apscheduler_job_id = db.Column(db.TEXT, db.ForeignKey('apscheduler_jobs.id'))
-    apscheduler_job_id = db.Column(db.TEXT)
+    weekdays_only = db.Column(db.Boolean())
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))
+    apscheduler_job_id = db.Column(db.TEXT)
+
+    # apscheduler_job_id = db.Column(db.TEXT, db.ForeignKey('apscheduler_jobs.id'))
 
 
 # class APSchedulerJobsTable(db.Model):

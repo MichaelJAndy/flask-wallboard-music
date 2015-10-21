@@ -5,14 +5,15 @@ from wtforms.validators import DataRequired, Optional, InputRequired, NumberRang
 __author__ = 'mandreacchio'
 
 
-class AddJobForm(Form):
+class JobForm(Form):
 
     job_id = IntegerField()
     name = StringField('Job Name', validators=[DataRequired()])
     hour = IntegerField('Hour', validators=[Optional()])
     minute = IntegerField('Minute', validators=[Optional()])
     second = IntegerField('Second', validators=[Optional()])
-    weekday = BooleanField('Weekdays only')
+    weekdays_only = BooleanField('Weekdays only')
+
 
 
 class DeleteJobForm(Form):

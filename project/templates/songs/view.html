@@ -5,7 +5,11 @@
         <br>
         <br>
 
-        <h2>Requested Songs <a href="{{ url_for('song.add', event_id=event_id) }}"><button type="button" class="btn btn-primary pull-right">Add Song Request</button></a> </h2>
+        <h2>
+            Requested Songs
+            <a href="{{ url_for('song.add', event_id=event_id) }}"><button type="button" class="btn btn-primary pull-right">Add Song Request</button></a>
+            <a href="{{ url_for('song.playrandom', event_id=event_id) }}"><button type="button" class="btn btn-default pull-right">Play Random Song</button></a>
+        </h2>
 
         <div class="datagrid">
 

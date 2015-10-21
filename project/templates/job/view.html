@@ -14,6 +14,7 @@
                     <th width="15px"><strong>id</strong></th>
                     <th width="300px"><strong>Job name</strong></th>
                     <th width="300px"><strong>Job Schedule</strong></th>
+                    <th width="300px"><strong>Weekdays Only</strong></th>
                     <th width="300px"><strong>Operations</strong></th>
 
 
@@ -24,17 +25,26 @@
                         <td>{{ job.id }}</td>
                         <td>{{ job.name }}</td>
                         <td>{{ job.day }} Hour={{ job.hour }} Min={{ job.minute }} Second={{ job.second }}</td>
+                        <td>{{ job.weekdays_only }}</td>
                         <td>
+                            <div class="row">
+                                <div class="col-xs-1">
+                                    <a href="{{ url_for('job.edit', job_id=job.id) }}">
+                                        <button>
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </button>
+                                    </a>
+                                </div>
 
-                            <div class="col-xs-1">
-                                <form action="{{ url_for('job.delete', job_id=job.id) }}" method="post">
-                                    {{ form.id(value=job.id) }}
-                                    <button type="submit">
-                                        <span class="glyphicon glyphicon-trash"></span>
-                                    </button>
-                                </form>
+                                <div class="col-xs-1">
+                                    <form action="{{ url_for('job.delete', job_id=job.id) }}" method="post">
+                                        {{ form.id(value=job.id) }}
+                                        <button type="submit">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-
                         </td>
                     </tr>
                 {% endfor %}

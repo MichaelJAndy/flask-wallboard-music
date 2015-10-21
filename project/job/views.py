@@ -3,7 +3,7 @@
 #################
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from project.models import Job
-from project.job.forms import AddJobForm, DeleteJobForm
+from project.job.forms import JobForm, DeleteJobForm
 # from project.job.helpers import blah
 from project.job.dao import JobDAO
 
@@ -23,7 +23,7 @@ job_dao = JobDAO()
 
 @job_blueprint.route('/job/add/<int:event_id>', methods=['GET', 'POST'])
 def add(event_id):
-    form = AddJobForm(request.form)
+    form = JobForm(request.form)
 
     if form.validate_on_submit():
         try:
@@ -32,10 +32,8 @@ def add(event_id):
                       hour=form.hour.data,
                       minute=form.minute.data,
                       second=form.second.data,
-                      event_id=event_id)
-
-            if form.weekday.data is True:
-                job.day_of_week = 'mon,tue,wed,thu,fri'
+                      event_id=event_id,
+                      weekdays_only=form.weekdays_only.data)
 
             job_dao.create_job(job)
             flash('Job added.', 'success')
@@ -44,9 +42,23 @@ def add(event_id):
         except Exception as e:
             flash('Job add fail {}'.format(e), 'danger')
             print(e)
-            return render_template('job/add.html', form=form)
+            return render_template('job/add_edit.html', form=form)
 
-    return render_template('job/add.html', form=form)
+    return render_template('job/add_edit.html', form=form)
+
+
+@job_blueprint.route('/job/edit/<int:job_id>', methods=['GET', 'POST'])
+def edit(job_id):
+    job = job_dao.get_job_by_id(job_id)
+    form = JobForm(request.form, job)
+
+    if form.validate_on_submit() and request.method == 'POST':
+        form.populate_obj(job)
+        job_dao.update_job(job)
+        flash("Job Edited", 'success')
+        return redirect(url_for("job.view", event_id=job.event_id))
+
+    return render_template('job/add_edit.html', form=form, job_id=job_id)
 
 
 @job_blueprint.route('/job/view/<int:event_id>')

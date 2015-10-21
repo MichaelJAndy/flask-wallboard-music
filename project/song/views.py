@@ -2,11 +2,13 @@
 #### imports ####
 #################
 import os
+import random
 from flask import render_template, Blueprint, url_for, redirect, flash, request
 from project.models import SongRequest, SongFile
 from project.song.forms import AddSongForm, DeleteSongForm
 from project.song.helpers import Downloader
 from project.song.dao import SongRequestDAO, SongFileDAO
+from project.event.dao import EventDAO
 
 ################
 #### config ####
@@ -15,6 +17,7 @@ from project.song.dao import SongRequestDAO, SongFileDAO
 song_blueprint = Blueprint('song', __name__,)
 song_request_dao = SongRequestDAO()
 song_file_dao = SongFileDAO()
+event_dao = EventDAO()
 
 ################
 #### routes ####
@@ -102,6 +105,13 @@ def redownload(request_id):
 @song_blueprint.route('/songs/playsong/<int:request_id>')
 def play(request_id):
     song_request = song_request_dao.get_song_request_by_id(request_id)
-    from project.event.dao import EventDAO
-    event = EventDAO().get_event_by_id(song_request.event_id)
+    event = event_dao.get_event_by_id(song_request.event_id)
     return render_template('songs/playsong.html', request=song_request, event=event)
+
+
+@song_blueprint.route('/songs/playrandom/<int:event_id>')
+def playrandom(event_id):
+    song_requests = song_request_dao.get_song_requests_by_kwargs(event_id=event_id)
+    rand_request = random.choice(song_requests)
+    event = event_dao.get_event_by_id(event_id)
+    return render_template('songs/playsong.html', request=rand_request, event=event)
